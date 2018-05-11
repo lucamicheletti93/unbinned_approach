@@ -1,12 +1,13 @@
 import ROOT
 import math
 
-ROOT.gROOT.ProcessLineSync(".x VWGPdf.cxx+")
 ROOT.gROOT.ProcessLineSync(".x CB2Pdf.cxx+")
 
-input_file = ROOT.TFile("../subsample_matrix_tree_file.root","READ")
+input_file = ROOT.TFile("../subsample_matrix_tree_file.root","READ") # on LOCAL
+#input_file = ROOT.TFile("/afs/cern.ch/work/l/lmichele/private/subsample_matrix_tree_file.root","READ") # on LXPLUS
+
 DimuMass_unb = ROOT.RooRealVar("DimuMass_unb_subsample","#it{m}_{#mu#mu}",2,5)
-dataset = ROOT.RooDataSet("dataset","dataset",ROOT.RooArgSet(DimuMass_unb),ROOT.RooFit.Import(input_file.Get("subsample_tree_9_5")))
+dataset = ROOT.RooDataSet("dataset","dataset",ROOT.RooArgSet(DimuMass_unb),ROOT.RooFit.Import(input_file.Get("subsample_tree_0_0")))
 
 # signal = CB2
 mean_CB2 = ROOT.RooRealVar("#it{m}_{J/#psi}","mean CB2",3.096,2.9,3.3)
