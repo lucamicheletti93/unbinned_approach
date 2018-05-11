@@ -18,30 +18,28 @@ public:
   CB2Pdf() {} ;
   CB2Pdf(const char *name, const char *title,
 	      RooAbsReal& _x,
-        RooAbsReal& _N,
         RooAbsReal& _mean,
-	      RooAbsReal& _sigma,
+	      RooAbsReal& _width,
         RooAbsReal& _alpha1,
-        RooAbsReal& _A1,
+        RooAbsReal& _n1,
         RooAbsReal& _alpha2,
-	      RooAbsReal& _A2);
+	      RooAbsReal& _n2);
   CB2Pdf(const CB2Pdf& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new CB2Pdf(*this,newname); }
   inline virtual ~CB2Pdf() { }
 
-  //Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
-  //Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
+  Int_t getAnalyticalIntegral(RooArgSet& allVars, RooArgSet& analVars, const char* rangeName=0) const ;
+  Double_t analyticalIntegral(Int_t code, const char* rangeName=0) const ;
 
 protected:
 
   RooRealProxy x ;
-  RooRealProxy N ;
   RooRealProxy mean ;
-  RooRealProxy sigma ;
+  RooRealProxy width ;
   RooRealProxy alpha1 ;
-  RooRealProxy A1 ;
+  RooRealProxy n1 ;
   RooRealProxy alpha2 ;
-  RooRealProxy A2 ;
+  RooRealProxy n2 ;
 
   Double_t evaluate() const ;
 

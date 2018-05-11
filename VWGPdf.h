@@ -18,7 +18,6 @@ public:
   VWGPdf() {} ;
   VWGPdf(const char *name, const char *title,
 	      RooAbsReal& _x,
-        RooAbsReal& _N,
         RooAbsReal& _mean,
 	      RooAbsReal& _alpha,
 	      RooAbsReal& _beta);
@@ -32,7 +31,6 @@ public:
 protected:
 
   RooRealProxy x ;
-  RooRealProxy N ;
   RooRealProxy mean ;
   RooRealProxy alpha ;
   RooRealProxy beta ;

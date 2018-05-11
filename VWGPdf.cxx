@@ -18,13 +18,11 @@ ClassImp(VWGPdf)
 
  VWGPdf::VWGPdf(const char *name, const char *title,
                         RooAbsReal& _x,
-                        RooAbsReal& _N,
                         RooAbsReal& _mean,
                         RooAbsReal& _alpha,
                         RooAbsReal& _beta) :
    RooAbsPdf(name,title),
    x("x","x",this,_x),
-   N("N","N",this,_N),
    mean("mean","mean",this,_mean),
    alpha("alpha","alpha",this,_alpha),
    beta("beta","beta",this,_beta)
@@ -35,7 +33,6 @@ ClassImp(VWGPdf)
  VWGPdf::VWGPdf(const VWGPdf& other, const char* name) :
    RooAbsPdf(other,name),
    x("x",this,other.x),
-   N("N",this,other.N),
    mean("mean",this,other.mean),
    alpha("alpha",this,other.alpha),
    beta("beta",this,other.beta)
@@ -50,7 +47,7 @@ ClassImp(VWGPdf)
    //return A*fabs(x)+pow(x-B,2) ;
 
    Double_t sigma = alpha + beta*((x - mean)/mean);
-   Double_t FitBck = N*exp(-(x - mean)*(x - mean)/(2.*sigma*sigma));
+   Double_t FitBck = exp(-(x - mean)*(x - mean)/(2.*sigma*sigma));
    return FitBck;
  }
 
