@@ -1,13 +1,19 @@
 import ROOT
 import math
+from array import array
 
 ROOT.gROOT.ProcessLineSync(".x CB2Pdf.cxx+")
 
-input_file = ROOT.TFile("../subsample_matrix_tree_file.root","READ") # on LOCAL
-#input_file = ROOT.TFile("/afs/cern.ch/work/l/lmichele/private/subsample_matrix_tree_file.root","READ") # on LXPLUS
+#input_file = ROOT.TFile("../subsample_matrix_tree_file.root","READ") # on LOCAL
+input_file = ROOT.TFile("/afs/cern.ch/work/l/lmichele/private/subsample_matrix_tree_file.root","READ") # on LXPLUS do not load "source iniroot.sh"
 
-for i in range(0,18):
-    for j in range(0,10):
+CostValues = [-1.00,-0.80,-0.60,-0.50,-0.40,-0.30,-0.20,-0.12,-0.04,0.04,0.12,0.20,0.30,0.40,0.50,0.60,0.80,1.00]
+PhiValues = [0.000000,0.502655,1.005310,1.256637,1.445133,1.570796,1.696460,1.884956,2.136283,2.638938,3.141593]
+
+histo_Jpsi = ROOT.TH2D("histo_Jpsi","histo_Jpsi",17,array('d',CostValues),10,array('d',PhiValues))
+
+for i in range(1,16):
+    for j in range(1,9):
         sample_name = "subsample_tree_%i_%i" % (i,j)
         DimuMass_unb = ROOT.RooRealVar("DimuMass_unb_subsample","#it{m}_{#mu#mu}",2,5)
         dataset = ROOT.RooDataSet("dataset","dataset",ROOT.RooArgSet(DimuMass_unb),ROOT.RooFit.Import(input_file.Get(sample_name)))
@@ -33,7 +39,9 @@ for i in range(0,18):
         model = ROOT.RooAddPdf("model","CB2 + VWG",ROOT.RooArgList(sig_CB2,bck_VWG),ROOT.RooArgList(sig,bck))
         #model.fitTo(dataset)
         result = model.fitTo(dataset,ROOT.RooFit.Extended(),ROOT.RooFit.Save());
-        result.Print()
+        #result.Print()
+
+        histo_Jpsi.SetBinContent(i+1,j+1,sig.getVal())
 
         DimuMass_unb_frame = DimuMass_unb.frame(ROOT.RooFit.Title("Dimuon mass distribution"))
         dataset.plotOn(DimuMass_unb_frame)
@@ -44,12 +52,13 @@ for i in range(0,18):
         model.plotOn(DimuMass_unb_frame)
         model.paramOn(DimuMass_unb_frame)
 
-        canvas_name = "range_%i_%i.eps" % (i,j)
-
-        canvas = ROOT.TCanvas(sample_name,sample_name,20,20,600,600)
-        canvas.cd()
-        DimuMass_unb_frame.Draw()
+        #canvas_name = "range_%i_%i.eps" % (i,j)
+        #canvas = ROOT.TCanvas(sample_name,sample_name,20,20,600,600)
+        #canvas.cd()
+        #DimuMass_unb_frame.Draw()
         #canvas.SaveAs(canvas_name)
+
+histo_Jpsi.Draw("COLZ")
 
 
 #DimuMass_unb.setBins(100)
