@@ -69,6 +69,11 @@ void fitTo_minv_unbinned(){
   TFile *input_file = new TFile("../subsample_matrix_tree_file.root","READ");
   //TTree* tree = (TTree*) input_file -> Get("output_tree");
 
+  double CostValues[18] = {-1.00,-0.80,-0.60,-0.50,-0.40,-0.30,-0.20,-0.12,-0.04,0.04,0.12,0.20,0.30,0.40,0.50,0.60,0.80,1.00};
+  double PhiValues[11] = {0.000000,0.502655,1.005310,1.256637,1.445133,1.570796,1.696460,1.884956,2.136283,2.638938,3.141593};
+
+  TH2D *histo_Jpsi = new TH2D("histo_Jpsi","",17,CostValues,10,PhiValues);
+
   for(int i = 1;i < 17;i++){
     for(int j = 1;j < 10;j++){
       TTree* tree = (TTree*) input_file -> Get(Form("subsample_tree_%i_%i",i,j));
@@ -85,7 +90,6 @@ void fitTo_minv_unbinned(){
       // Fitting functions
       //============================================================================
 
-
       RooRealVar mean_CB2("#it{m}_{J/#psi}","mean CB2",3.096,2.9,3.3);
       RooRealVar width_CB2("#it{#sigma}_{J/#psi}","width CB2",0.07,0.05,0.09);
       RooRealVar alpha1_CB2("#alpha1_{CB2}","alpha1 CB2",1.06);
@@ -101,12 +105,10 @@ void fitTo_minv_unbinned(){
       RooGenericPdf bck_VWG("bck_VWG","bck_VWG","exp(-(@0 - @1)*(@0 - @1)/(2*(@2 + @3*((@0 - @1)/@1))*(@2 + @3*((@0 - @1)/@1))))",RooArgList(DimuMass_unb,mean_VWG,alpha_VWG,beta_VWG));
       RooRealVar bck("background","background yield",3.45165e+04,1000,500000);
 
-
       RooAddPdf model("model","CB2 + VWG",RooArgList(sig_CB2,bck_VWG),RooArgList(sig,bck));
       model.fitTo(dataset,Extended(),Save());
 
-
-      //model.fitTo(minv_dataset);
+      histo_Jpsi -> SetBinContent(i+1,j+1,sig.getVal())
 
       //============================================================================
       // Drawing the plot ...
@@ -120,5 +122,7 @@ void fitTo_minv_unbinned(){
       //plot -> Draw();
     }
   }
+
+  histo_Jpsi -> Draw("COLZtxt");
 
 }
